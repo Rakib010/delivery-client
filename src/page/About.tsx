@@ -1,9 +1,3 @@
-import { Button } from "@/components/ui/button";
-
 export default function About() {
-  return (
-    <div>
-      <Button>Hello</Button>
-    </div>
-  );
+  return <div>This is about page</div>;
 }

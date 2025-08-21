@@ -1,11 +1,14 @@
-import { Button } from "./components/ui/button";
+import { Outlet } from "react-router";
+import Navbar from "./layout/Navbar";
+import Footer from "./layout/Footer";
 
 function App() {
   return (
-    <>
-      <h1>Vite + React</h1>
-      <Button>Click Me</Button>
-    </>
+    <div className="font-mono">
+      <Navbar />
+      <Outlet />
+      <Footer />
+    </div>
   );
 }
 

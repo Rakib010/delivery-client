@@ -1,7 +1,9 @@
-import React from 'react'
-
 export default function Home() {
   return (
-    <div>Home</div>
-  )
+    <div>
+      <p>Banner </p>
+      <p>new section </p>
+      <p>show another section </p>
+    </div>
+  );
 }
