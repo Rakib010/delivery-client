@@ -1,8 +1,9 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
 import {
   Form,
   FormControl,
@@ -12,6 +13,8 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { useForm } from "react-hook-form";
+import { useRegisterMutation } from "@/redux/features/auth/auth.api";
+import { toast } from "sonner";
 
 export function RegisterForm({
   className,
@@ -21,14 +24,26 @@ export function RegisterForm({
     defaultValues: {
       name: "",
       email: "",
-      phone: "",
       password: "",
+      phone: "",
       role: "",
     },
   });
+  const [userCreate] = useRegisterMutation();
+  const navigate = useNavigate();
 
-  const onSubmit = (data: any) => {
-    console.log("Form Data:", data);
+  const onSubmit = async (data: any) => {
+    try {
+      const res = await userCreate(data).unwrap();
+      if (res.success) {
+        toast.success("User create successfully");
+        navigate("/login");
+      }
+      //console.log(res);
+    } catch (error) {
+      //console.log(error);
+      toast.error("something went wrong");
+    }
   };
 
   return (
@@ -132,9 +147,9 @@ export function RegisterForm({
                         {...field}
                         className="w-full border rounded p-2 bg-background"
                       >
-                        <option value="">-- Select Role --</option>
-                        <option value="sender">Sender</option>
-                        <option value="receiver">Receiver</option>
+                        <option value="">Select Role</option>
+                        <option value="SENDER">SENDER</option>
+                        <option value="RECEIVER">RECEIVER</option>
                       </select>
                     </FormControl>
                     <FormMessage />

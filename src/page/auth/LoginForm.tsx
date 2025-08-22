@@ -1,8 +1,9 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
 import {
   Form,
   FormControl,
@@ -12,20 +13,27 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { useForm } from "react-hook-form";
+import { toast } from "sonner";
+import { useLoginMutation } from "@/redux/features/auth/auth.api";
 
 export function LoginForm({
   className,
   ...props
 }: React.ComponentProps<"div">) {
-  const form = useForm({
-    defaultValues: {
-      email: "",
-      password: "",
-    },
-  });
+  const form = useForm();
+  const [login] = useLoginMutation();
+  const navigate = useNavigate();
 
-  const onSubmit = (data: any) => {
-    console.log("Login Data:", data);
+  const onSubmit = async (data: any) => {
+    try {
+      const res = await login(data).unwrap();
+      if (res.success) {
+        toast.success("user login successfully");
+        navigate("/");
+      }
+    } catch (error) {
+      toast.error(`something went wrong`);
+    }
   };
 
   return (
