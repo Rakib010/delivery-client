@@ -26,15 +26,19 @@ import {
 } from "@/redux/features/auth/auth.api";
 import { useAppDispatch } from "@/redux/hook";
 import { Link } from "react-router";
+import { role } from "@/types";
 
 const navigationLinks = [
-  { href: "/", label: "Home" },
-  { href: "/about", label: "About" },
-  { href: "/contact", label: "Contact" },
+  { href: "/", label: "Home", role: "PUBLIC" },
+  { href: "/about", label: "About", role: "PUBLIC" },
+  { href: "/contact", label: "Contact", role: "PUBLIC" },
+  { href: "/admin", label: "Dashboard", role: role.admin },
+  { href: "/sender", label: "Dashboard", role: role.sender },
+  { href: "/receiver", label: "Dashboard", role: role.receiver },
 ];
 
 export default function Navbar() {
-  const { data: user } = useUserInfoQuery(undefined);
+  const { data } = useUserInfoQuery(undefined);
   const [logout] = useLogoutMutation();
   const dispatch = useAppDispatch();
 
@@ -45,17 +49,96 @@ export default function Navbar() {
 
   return (
     <header className="border-b px-4 md:px-6">
-      <div className="flex h-16 items-center justify-between gap-4">
-        {/* Left side */}
+      <div className="flex h-16 items-center justify-between">
+        {/* LEFT - Logo */}
+        <Link
+          to="/"
+          className="text-primary hover:text-primary/90 font-bold text-lg"
+        >
+          Parcel Delivery
+        </Link>
+
+        {/* CENTER - Nav links */}
+        <NavigationMenu className="hidden md:flex">
+          <NavigationMenuList className="gap-4">
+            {navigationLinks.map((link, index) => (
+              <>
+                {link.role === "PUBLIC" && (
+                  <NavigationMenuItem key={index}>
+                    <NavigationMenuLink
+                      asChild
+                      className="text-muted-foreground hover:text-primary font-medium"
+                    >
+                      <Link to={link.href}>{link.label}</Link>
+                    </NavigationMenuLink>
+                  </NavigationMenuItem>
+                )}
+                {link.role === data?.data?.role && (
+                  <NavigationMenuItem key={index}>
+                    <NavigationMenuLink
+                      asChild
+                      className="text-muted-foreground hover:text-primary font-medium"
+                    >
+                      <Link to={link.href}>{link.label}</Link>
+                    </NavigationMenuLink>
+                  </NavigationMenuItem>
+                )}
+              </>
+            ))}
+          </NavigationMenuList>
+        </NavigationMenu>
+
+        {/* RIGHT - ModeToggle + Auth */}
         <div className="flex items-center gap-2">
-          {/* Mobile menu trigger */}
+          <ModeToggle />
+
+          {data ? (
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="outline" size="sm" className="font-medium">
+                  {data?.data?.name ?? "User"}
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent className="w-56" align="end">
+                <DropdownMenuLabel>
+                  <div className="flex flex-col">
+                    <span className="font-semibold">{data?.data?.name}</span>
+                    <span className="text-xs text-muted-foreground">
+                      {data?.data?.email}
+                    </span>
+                  </div>
+                </DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem asChild>
+                  <Link
+                    to={
+                      data?.data?.role === role.admin
+                        ? "/admin"
+                        : data?.data?.role === role.sender
+                        ? "/sender"
+                        : "/receiver"
+                    }
+                  >
+                    Dashboard
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={handleLogout}>
+                  Logout
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          ) : (
+            <Button asChild variant="ghost" size="sm" className="text-sm">
+              <Link to="/login">Sign In</Link>
+            </Button>
+          )}
+        </div>
+
+        {/* MOBILE MENU */}
+        <div className="md:hidden">
           <Popover>
             <PopoverTrigger asChild>
-              <Button
-                className="group size-8 md:hidden"
-                variant="ghost"
-                size="icon"
-              >
+              <Button className="group size-8" variant="ghost" size="icon">
                 <svg
                   className="pointer-events-none"
                   width={16}
@@ -74,81 +157,31 @@ export default function Navbar() {
                 </svg>
               </Button>
             </PopoverTrigger>
-            <PopoverContent align="start" className="w-36 p-1 md:hidden">
-              <NavigationMenu className="max-w-none *:w-full">
-                <NavigationMenuList className="flex-col items-start gap-0 md:gap-2">
+            <PopoverContent align="end" className="w-40 p-2">
+              <NavigationMenu>
+                <NavigationMenuList className="flex-col gap-2">
                   {navigationLinks.map((link, index) => (
-                    <NavigationMenuItem key={index} className="w-full">
-                      <NavigationMenuLink href={link.href} className="py-1.5">
-                        {link.label}
-                      </NavigationMenuLink>
-                    </NavigationMenuItem>
+                    <>
+                      {link.role === "PUBLIC" && (
+                        <NavigationMenuItem key={index}>
+                          <NavigationMenuLink asChild>
+                            <Link to={link.href}>{link.label}</Link>
+                          </NavigationMenuLink>
+                        </NavigationMenuItem>
+                      )}
+                      {link.role === data?.data?.role && (
+                        <NavigationMenuItem key={index}>
+                          <NavigationMenuLink asChild>
+                            <Link to={link.href}>{link.label}</Link>
+                          </NavigationMenuLink>
+                        </NavigationMenuItem>
+                      )}
+                    </>
                   ))}
                 </NavigationMenuList>
               </NavigationMenu>
             </PopoverContent>
           </Popover>
-
-          {/* Main nav */}
-          <div className="flex items-center gap-6">
-            <Link
-              to="/"
-              className="text-primary hover:text-primary/90 font-bold"
-            >
-              Parcel Delivery
-            </Link>
-
-            <NavigationMenu className="max-md:hidden">
-              <NavigationMenuList className="gap-2">
-                {navigationLinks.map((link, index) => (
-                  <NavigationMenuItem key={index}>
-                    <NavigationMenuLink
-                      href={link.href}
-                      className="text-muted-foreground hover:text-primary py-1.5 font-medium"
-                    >
-                      {link.label}
-                    </NavigationMenuLink>
-                  </NavigationMenuItem>
-                ))}
-              </NavigationMenuList>
-            </NavigationMenu>
-          </div>
-        </div>
-
-        {/* Right side */}
-        <div className="flex items-center gap-2">
-          <ModeToggle />
-
-          {user ? (
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="outline" size="sm" className="font-medium">
-                  {user?.data?.name ?? "User"}
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent className="w-56" align="end">
-                <DropdownMenuLabel>
-                  <div className="flex flex-col">
-                    <span className="font-semibold">{user?.data?.name}</span>
-                    <span className="text-xs text-muted-foreground">
-                      {user?.data?.email}
-                    </span>
-                  </div>
-                </DropdownMenuLabel>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem asChild>
-                  <Link to="/dashboard">Dashboard</Link>
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={handleLogout}>
-                  Logout
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-          ) : (
-            <Button asChild variant="ghost" size="sm" className="text-sm">
-              <Link to="/login">Sign In</Link>
-            </Button>
-          )}
         </div>
       </div>
     </header>

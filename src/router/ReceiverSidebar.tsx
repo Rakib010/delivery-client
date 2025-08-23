@@ -1,4 +1,6 @@
-import ViewParcel from "@/page/Receiver/ViewParcel";
+import ConfirmParcel from "@/page/Receiver/ConfirmParcel";
+import DeliveryHistory from "@/page/Receiver/DeliveryHistory";
+import IncomingParcel from "@/page/Receiver/IncomingParcel";
 import type { ISidebarItem } from "@/types";
 
 export const ReceiverSidebar: ISidebarItem[] = [
@@ -6,9 +8,19 @@ export const ReceiverSidebar: ISidebarItem[] = [
     title: "Receiver",
     items: [
       {
-        title: "Receiver",
-        url: "/receiver/view-parcel",
-        component: ViewParcel,
+        title: "View incoming parcels",
+        url: "/receiver/incoming-parcel",
+        component: IncomingParcel,
+      },
+      {
+        title: "Confirm parcel delivery",
+        url: "/receiver/confirm-parcel",
+        component: ConfirmParcel,
+      },
+      {
+        title: "View delivery history",
+        url: "/receiver/delivery-history",
+        component: DeliveryHistory,
       },
     ],
   },

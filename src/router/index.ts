@@ -1,3 +1,4 @@
+import { Role } from './../../../delivery-server/src/app/modules/user/user.interface';
 import App from "@/App";
 import DashboardLayout from "@/layout/DashboardLayout";
 import About from "@/page/About";
@@ -35,24 +36,24 @@ export const router = createBrowserRouter([
     },
     /* Dashboard Admin*/
     {
-        Component: withAuth(DashboardLayout, role.admin as TRole),
+        Component: withAuth(DashboardLayout, role.admin as Role),
         path: "/admin",
         children: [...generateRoutes(adminSidebar),],
     },
-    /* Sender Admin*/
+    /* Dashboard Sender */
     {
         Component: withAuth(DashboardLayout, role.sender as TRole),
         path: "/sender",
         children: [...generateRoutes(SenderSidebar),],
     },
-    /* Receiver Admin*/
+    /* Dashboard Receiver */
     {
         Component: withAuth(DashboardLayout, role.receiver as TRole),
         path: "/receiver",
         children: [...generateRoutes(ReceiverSidebar),],
     },
 
-    /* public */
+    /*  */
     {
         path: "/login",
         Component: Login,
