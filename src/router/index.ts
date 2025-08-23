@@ -1,10 +1,18 @@
 import App from "@/App";
+import DashboardLayout from "@/layout/DashboardLayout";
 import About from "@/page/About";
 import Login from "@/page/auth/Login";
 import Register from "@/page/auth/Register";
 import Contact from "@/page/Contact";
 import Home from "@/page/Home/Home";
+import Unauthorized from "@/page/Unauthorized";
+import { role, type TRole } from "@/types";
+import { generateRoutes } from "@/utils/generateRoutes";
+import { withAuth } from "@/utils/withAuth";
 import { createBrowserRouter } from "react-router";
+import { adminSidebar } from "./adminSidebar";
+import { SenderSidebar } from "./SenderSidebar";
+import { ReceiverSidebar } from "./ReceiverSidebar";
 
 export const router = createBrowserRouter([
     {
@@ -25,6 +33,26 @@ export const router = createBrowserRouter([
             }
         ]
     },
+    /* Dashboard Admin*/
+    {
+        Component: withAuth(DashboardLayout, role.admin as TRole),
+        path: "/admin",
+        children: [...generateRoutes(adminSidebar),],
+    },
+    /* Sender Admin*/
+    {
+        Component: withAuth(DashboardLayout, role.sender as TRole),
+        path: "/sender",
+        children: [...generateRoutes(SenderSidebar),],
+    },
+    /* Receiver Admin*/
+    {
+        Component: withAuth(DashboardLayout, role.receiver as TRole),
+        path: "/receiver",
+        children: [...generateRoutes(ReceiverSidebar),],
+    },
+
+    /* public */
     {
         path: "/login",
         Component: Login,
@@ -34,6 +62,10 @@ export const router = createBrowserRouter([
         path: "/register",
         Component: Register,
 
+    },
+    {
+        path: "/unauthorized",
+        Component: Unauthorized,
     }
 ]);
 

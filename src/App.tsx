@@ -1,13 +1,12 @@
 import { Outlet } from "react-router";
-import Navbar from "./layout/Navbar";
-import Footer from "./layout/Footer";
+import CommonLayout from "./layout/CommonLayout";
 
 function App() {
   return (
     <div className="font-mono">
-      <Navbar />
-      <Outlet />
-      <Footer />
+      <CommonLayout>
+        <Outlet />
+      </CommonLayout>
     </div>
   );
 }
