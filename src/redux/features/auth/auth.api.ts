@@ -23,6 +23,12 @@ export const authApi = baseApi.injectEndpoints({
                 method: "GET",
             })
         }),
+        receiverInfo: builder.query({
+            query: () => ({
+                url: "/user/all-receiver",
+                method: "GET",
+            })
+        }),
         logout: builder.mutation({
             query: () => ({
                 url: "/auth/logout",
@@ -32,4 +38,4 @@ export const authApi = baseApi.injectEndpoints({
     })
 })
 
-export const { useRegisterMutation, useLoginMutation, useLogoutMutation, useUserInfoQuery } = authApi
+export const { useRegisterMutation, useLoginMutation, useLogoutMutation, useUserInfoQuery, useReceiverInfoQuery } = authApi
