@@ -14,6 +14,7 @@ import { createBrowserRouter } from "react-router";
 import { adminSidebar } from "./adminSidebar";
 import { SenderSidebar } from "./SenderSidebar";
 import { ReceiverSidebar } from "./ReceiverSidebar";
+import ParcelTracking from '@/page/ParcelTracking';
 
 export const router = createBrowserRouter([
     {
@@ -31,6 +32,10 @@ export const router = createBrowserRouter([
             {
                 path: "/contact",
                 Component: Contact,
+            },
+            {
+                path: "/tracking",
+                Component: ParcelTracking,
             }
         ]
     },

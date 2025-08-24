@@ -1,11 +1,11 @@
+import Feature from "./Feature";
+import Herosection from "./Herosection";
 
 export default function Home() {
-
   return (
     <div>
-      <p>Banner </p>
-      <p>new section </p>
-      <p>show another section </p>
+      <Herosection />
+      <Feature />
     </div>
   );
 }
