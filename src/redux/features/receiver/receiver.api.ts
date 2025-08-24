@@ -16,7 +16,7 @@ export const receiverApi = baseApi.injectEndpoints({
         }),
         confirmParcelDelivery: builder.mutation({
             query: (id: string) => ({
-                url: `parcel/cancel/${id}`,
+                url: `/parcel/confirm-delivery/${id}`,
                 method: "PATCH",
             }),
         }),

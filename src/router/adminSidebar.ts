@@ -13,12 +13,14 @@ export const adminSidebar: ISidebarItem[] = [
             {
                 title: "All User",
                 url: "/admin/all-user",
-                component: AllUsers
+                component: AllUsers,
+                isActive: undefined,
             },
             {
                 title: "All Parcel",
                 url: "/admin/all-parcel",
-                component: AllParcels
+                component: AllParcels,
+                isActive: undefined,
             },
         ],
     },

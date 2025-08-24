@@ -1,7 +1,7 @@
-
+import { useAllParcelsQuery } from "@/redux/features/admin/admin.api";
 
 export default function AllParcels() {
-  return (
-    <div>AllParcels</div>
-  )
+  const { data } = useAllParcelsQuery(undefined);
+  console.log(data);
+  return <div>AllParcels</div>;
 }

@@ -9,6 +9,7 @@ export interface IResponse<T> {
 export interface ISidebarItem {
     title: string;
     items: {
+        isActive: boolean | undefined;
         title: string;
         url: string;
         component: ComponentType;
