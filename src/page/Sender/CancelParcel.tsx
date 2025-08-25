@@ -3,72 +3,38 @@ import {
   useGetParcelsQuery,
   useCancelParcelMutation,
 } from "@/redux/features/sender/sender.api";
-import {
-  Loader2,
-  Package,
-  Truck,
-  CheckCircle,
-  XCircle,
-  Calendar,
-} from "lucide-react";
+import { Loader2, Package, XCircle, Calendar } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
+import { getStatusIcon, getStatusVariant } from "@/utils/status";
+import { handleLoadingError } from "@/utils/ErrorHandle";
 
 export default function SenderParcels() {
-  const { data, isLoading } = useGetParcelsQuery(undefined);
+  const { data, isLoading, isError } = useGetParcelsQuery(undefined);
   const [cancelParcel, { isLoading: isCancelling }] = useCancelParcelMutation();
 
   const handleCancel = async (id: string) => {
     try {
-      await cancelParcel(id).unwrap();
-      toast.success("Parcel cancelled successfully!");
+      const res = await cancelParcel(id).unwrap();
+      if (res.success) {
+        toast.success("Parcel cancelled successfully!");
+      }
     } catch (err: any) {
       toast.error(err.data?.message || "Failed to cancel parcel");
     }
   };
 
-  const getStatusIcon = (status: string) => {
-    switch (status) {
-      case "DISPATCHED":
-        return <Truck className="h-4 w-4 text-blue-500" />;
-      case "DELIVERED":
-        return <CheckCircle className="h-4 w-4 text-green-500" />;
-      case "CANCELLED":
-        return <XCircle className="h-4 w-4 text-red-500" />;
-      default:
-        return <Package className="h-4 w-4 text-muted-foreground" />;
-    }
-  };
-
-  const getStatusVariant = (status: string) => {
-    switch (status) {
-      case "DISPATCHED":
-        return "secondary";
-      case "DELIVERED":
-        return "default";
-      case "CANCELLED":
-        return "destructive";
-      default:
-        return "outline";
-    }
-  };
-
-  if (isLoading)
-    return (
-      <div className="flex justify-center items-center min-h-screen">
-        <Loader2 className="animate-spin h-8 w-8" />
-      </div>
-    );
+  const loadingErrorUI = handleLoadingError(isLoading, isError);
+  if (loadingErrorUI) return loadingErrorUI;
 
   return (
-    <div className="container mx-auto py-8 px-4">
-      <div className="flex flex-col gap-2 mb-6">
-        <h1 className="text-3xl font-bold tracking-tight">My Parcels</h1>
-        <p className="text-muted-foreground">
-          {data?.data?.length || 0} parcels in total
-        </p>
+    <div className="container mx-auto px-4 font-mono">
+      <div className="flex flex-col gap-2 mb-6 text-center">
+        <h1 className="text-3xl font-semibold tracking-tight my-4">
+          My Parcels
+        </h1>
       </div>
 
       {data?.data?.length === 0 ? (
@@ -106,7 +72,7 @@ export default function SenderParcels() {
                             {parcel.type}
                           </div>
                           <div className="text-sm text-muted-foreground">
-                            ID: {parcel._id.slice(-6)}
+                            ID: {parcel.trackingId}
                           </div>
                         </div>
                       </div>
@@ -125,7 +91,7 @@ export default function SenderParcels() {
                         {new Date(parcel.createdAt).toLocaleDateString()}
                       </div>
                     </td>
-                    <td className="p-4 text-center">
+                    <td className="text-center">
                       {parcel.status !== "DISPATCHED" &&
                       parcel.status !== "CANCELLED" ? (
                         <Button
@@ -133,7 +99,8 @@ export default function SenderParcels() {
                           disabled={isCancelling}
                           variant="destructive"
                           size="sm"
-                          className="gap-1"
+                          className="gap-1 "
+                          
                         >
                           {isCancelling ? (
                             <Loader2 className="h-4 w-4 animate-spin" />
@@ -149,7 +116,7 @@ export default function SenderParcels() {
                           size="sm"
                           className="gap-1 opacity-50"
                         >
-                          <XCircle className="h-4 w-4" />
+                          <XCircle className="h-4 w-4 " />
                           Cancelled
                         </Button>
                       )}

@@ -8,19 +8,19 @@ export const ReceiverSidebar: ISidebarItem[] = [
     title: "Receiver",
     items: [
       {
-        title: "View incoming parcels",
+        title: "Incoming Parcels",
         url: "/receiver/incoming-parcel",
         component: IncomingParcel,
         isActive: undefined,
       },
       {
-        title: "Confirm parcel delivery",
+        title: "Confirm Parcel",
         url: "/receiver/confirm-parcel",
         component: ConfirmParcel,
         isActive: undefined,
       },
       {
-        title: "View delivery history",
+        title: "Delivery History",
         url: "/receiver/delivery-history",
         component: DeliveryHistory,
         isActive: undefined,

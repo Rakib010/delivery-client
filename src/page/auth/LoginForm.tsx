@@ -15,6 +15,7 @@ import {
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { useLoginMutation } from "@/redux/features/auth/auth.api";
+import p1 from "../../assets/login1.avif";
 
 export function LoginForm({
   className,
@@ -113,7 +114,7 @@ export function LoginForm({
           {/* Right side image */}
           <div className="bg-muted relative hidden md:block">
             <img
-              src="/placeholder.svg"
+              src={p1}
               alt="Image"
               className="absolute inset-0 h-full w-full object-cover dark:brightness-[0.2] dark:grayscale"
             />

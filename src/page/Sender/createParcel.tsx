@@ -21,17 +21,8 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useReceiverInfoQuery } from "@/redux/features/auth/auth.api";
+import type { TParcels } from "@/utils/types";
 
-type TParcels = {
-  type: string;
-  weight: string;
-  fee: string;
-  phoneNumber: string;
-  pickupAddress: string;
-  deliveryAddress: string;
-  deliveryDate: string;
-  receiver: string;
-};
 
 export default function CreateParcel() {
   const form = useForm<TParcels>({
@@ -52,19 +43,20 @@ export default function CreateParcel() {
   const onSubmit = async (data: TParcels) => {
     try {
       const res = await createParcel(data).unwrap();
-      console.log(res);
+      // console.log(res);
       if (res.success) {
         toast.success("parcel created successfully");
         form.reset();
       }
     } catch (error) {
-      console.log(error);
+      //console.log(error);
+      toast.error("Something went wrong");
     }
   };
 
   return (
-    <div className="flex justify-center items-center min-h-screen p-4">
-      <Card className="w-full max-w-2xl shadow-lg rounded-2xl">
+    <div className="flex justify-center items-center p-4 font-mono">
+      <Card className="w-full max-w-2xl border rounded-2xl">
         <CardHeader>
           <CardTitle className="text-2xl font-bold text-center text-primary">
             Create New Parcel
@@ -129,7 +121,7 @@ export default function CreateParcel() {
                 name="phoneNumber"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Receiver Phone Number</FormLabel>
+                    <FormLabel>Phone Number</FormLabel>
                     <FormControl>
                       <Input {...field} />
                     </FormControl>

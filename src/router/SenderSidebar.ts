@@ -8,19 +8,19 @@ export const SenderSidebar: ISidebarItem[] = [
         title: "Sender",
         items: [
             {
-                title: "Create parcel delivery",
+                title: "Create Parcel ",
                 url: "/sender/create-parcel",
                 component: CreateParcel,
                 isActive: undefined
             },
             {
-                title: "Cancel parcel",
+                title: "Cancel Parcel",
                 url: "/sender/cancel-parcel",
                 component: CancelParcel,
                 isActive: undefined
             },
             {
-                title: "View all parcels",
+                title: "All parcels",
                 url: "/sender/view-parcel",
                 component: ViewParcels,
                 isActive: undefined

@@ -1,36 +1,19 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useGetParcelsQuery } from "@/redux/features/sender/sender.api";
-import {
-  Loader2,
-  Package,
-  Calendar,
-  Scale,
-  CreditCard,
-  User,
-} from "lucide-react";
+import { Package, Calendar, Scale, CreditCard, User } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { handleLoadingError } from "@/utils/ErrorHandle";
 
 export default function ViewParcels() {
   const { data, isLoading, isError } = useGetParcelsQuery(undefined);
 
-  if (isLoading)
-    return (
-      <div className="flex justify-center items-center min-h-screen">
-        <Loader2 className="animate-spin h-8 w-8" />
-      </div>
-    );
-
-  if (isError)
-    return (
-      <div className="flex justify-center items-center min-h-screen">
-        <p>Failed to load parcels</p>
-      </div>
-    );
+  const loadingErrorUI = handleLoadingError(isLoading, isError);
+  if (loadingErrorUI) return loadingErrorUI;
 
   return (
-    <div className="container mx-auto py-8 px-4">
-      <div className="flex flex-col gap-2 mb-6">
+    <div className="container mx-auto px-4 font-mono">
+      <div className="flex flex-col gap-2 mb-6 text-center">
         <h1 className="text-3xl font-bold tracking-tight">All Parcels</h1>
         <p className="text-muted-foreground">
           Manage and track all parcels in the system
@@ -117,40 +100,7 @@ export default function ViewParcels() {
                       </Badge>
                     </td>
                     <td className="p-4">
-                      <div className="flex flex-col gap-1">
-                        {parcel.trackingEvents
-                          ?.slice(0, 3)
-                          .map((log: any, index: number) => (
-                            <div
-                              key={index}
-                              className="flex items-center gap-2"
-                            >
-                              <div
-                                className={`h-2 w-2 rounded-full ${
-                                  index === 0
-                                    ? "bg-green-500"
-                                    : index === 1
-                                    ? "bg-blue-500"
-                                    : "bg-muted-foreground"
-                                }`}
-                              />
-                              <span className="text-sm capitalize">
-                                {log.status.toLowerCase()}
-                              </span>
-                            </div>
-                          ))}
-                        {parcel.trackingEvents?.length > 3 && (
-                          <div className="text-xs text-muted-foreground mt-1">
-                            +{parcel.trackingEvents.length - 3} more events
-                          </div>
-                        )}
-                        {(!parcel.trackingEvents ||
-                          parcel.trackingEvents.length === 0) && (
-                          <span className="text-sm text-muted-foreground">
-                            No status updates
-                          </span>
-                        )}
-                      </div>
+                      <div className="flex flex-col gap-1">{parcel.status}</div>
                     </td>
                     <td className="p-4">
                       <div className="flex items-center gap-1">

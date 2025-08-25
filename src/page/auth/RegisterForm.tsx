@@ -15,6 +15,7 @@ import {
 import { useForm } from "react-hook-form";
 import { useRegisterMutation } from "@/redux/features/auth/auth.api";
 import { toast } from "sonner";
+import p1 from "../../assets/login.avif";
 
 export function RegisterForm({
   className,
@@ -173,9 +174,9 @@ export function RegisterForm({
           {/* Right side image */}
           <div className="bg-muted relative hidden md:block">
             <img
-              src="/placeholder.svg"
+              src={p1}
               alt="Image"
-              className="absolute inset-0 h-full w-full object-cover dark:brightness-[0.2] dark:grayscale"
+              className="absolute inset-0 h-full w-full object-cover  dark:brightness-[0.2] dark:grayscale"
             />
           </div>
         </CardContent>
