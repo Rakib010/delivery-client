@@ -1,82 +1,24 @@
 import { useDeliveryHistoryQuery } from "@/redux/features/receiver/receiver.api";
-import {
-  Package,
-  Calendar,
-  MapPin,
-  User,
-  Clock,
-  CheckCircle,
-  Truck,
-  AlertCircle,
-  Loader2,
-} from "lucide-react";
+import { Package, Calendar, MapPin, User } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { getStatusInfo } from "@/utils/status";
+import { handleLoadingError } from "@/utils/ErrorHandle";
 
 export default function DeliveryHistory() {
   const { data, isLoading, isError } = useDeliveryHistoryQuery(undefined);
 
-  if (isLoading)
-    return (
-      <div className="flex justify-center items-center min-h-screen">
-        <Loader2 className="animate-spin h-8 w-8" />
-      </div>
-    );
-
-  if (isError)
-    return (
-      <div className="flex justify-center items-center min-h-screen">
-        <p>Failed to load parcels</p>
-      </div>
-    );
-
-  const getStatusInfo = (status: string) => {
-    switch (status) {
-      case "DELIVERED":
-        return {
-          icon: <CheckCircle className="h-4 w-4" />,
-          variant: "default" as const,
-          color: "text-green-600",
-        };
-      case "DISPATCHED":
-        return {
-          icon: <Truck className="h-4 w-4" />,
-          variant: "secondary" as const,
-          color: "text-blue-600",
-        };
-      case "IN_TRANSIT":
-        return {
-          icon: <Truck className="h-4 w-4" />,
-          variant: "outline" as const,
-          color: "text-orange-600",
-        };
-      case "PENDING":
-        return {
-          icon: <Clock className="h-4 w-4" />,
-          variant: "outline" as const,
-          color: "text-gray-600",
-        };
-      case "CANCELLED":
-        return {
-          icon: <AlertCircle className="h-4 w-4" />,
-          variant: "destructive" as const,
-          color: "text-red-600",
-        };
-      default:
-        return {
-          icon: <Package className="h-4 w-4" />,
-          variant: "outline" as const,
-          color: "text-gray-600",
-        };
-    }
-  };
+  const loadingErrorUI = handleLoadingError(isLoading, isError);
+  if (loadingErrorUI) return loadingErrorUI;
 
   return (
-    <div className="container mx-auto py-8 px-4">
-      <div className="flex flex-col gap-2 mb-6">
-        <h1 className="text-3xl font-bold tracking-tight">Delivery History</h1>
-        <p className="text-muted-foreground">
-          {data?.data?.length || 0} completed delivery(s)
+    <div className="container mx-auto  px-4 font-mono">
+      <div className="flex flex-col gap-2 mb-6 text-center">
+        <h1 className="text-3xl text-gray-900 dark:text-gray-200">
+          Delivery History
+        </h1>
+        <p className="text-xl">
+          {data?.data?.length || 0} completed delivery<span className="text-orange-400">s</span>
         </p>
       </div>
 
@@ -97,12 +39,10 @@ export default function DeliveryHistory() {
               <thead>
                 <tr className="border-b bg-muted/50">
                   <th className="p-4 text-left font-medium">Parcel</th>
-                  <th className="p-4 text-left font-medium">Sender</th>
-                  <th className="p-4 text-left font-medium">
-                    Delivery Address
-                  </th>
+                  <th className="p-4 text-left font-medium">Sender/Receiver</th>
+                  <th className="p-4 text-left font-medium">Pickup/Delivery</th>
                   <th className="p-4 text-left font-medium">Status</th>
-                  <th className="p-4 text-left font-medium">Delivery Date</th>
+                  <th className="p-4 text-left font-medium">Date</th>
                 </tr>
               </thead>
               <tbody>
@@ -113,6 +53,7 @@ export default function DeliveryHistory() {
                       key={delivery._id}
                       className="border-b hover:bg-muted/30"
                     >
+                      {/* Parcel Column */}
                       <td className="p-4">
                         <div className="flex items-center gap-3">
                           <div className="bg-primary/10 p-2 rounded-lg">
@@ -120,47 +61,100 @@ export default function DeliveryHistory() {
                           </div>
                           <div>
                             <div className="font-medium capitalize">
-                              {delivery.type}
+                              {delivery.type || "Package"}
                             </div>
                             <div className="text-sm text-muted-foreground">
-                              {delivery.weight
-                                ? `${delivery.weight} kg`
-                                : "Weight not specified"}
+                              {delivery.trackingId && (
+                                <span className="font-mono">
+                                  ID: {delivery.trackingId}
+                                </span>
+                              )}
                             </div>
                           </div>
                         </div>
                       </td>
+
+                      {/* Sender/Receiver Column */}
                       <td className="p-4">
-                        <div className="flex items-center gap-2 text-sm">
-                          <User className="h-4 w-4 text-muted-foreground" />
-                          {delivery.sender?.name}
+                        <div className="space-y-2">
+                          {delivery.sender && (
+                            <div className="flex items-center gap-2 text-sm">
+                              <User className="h-4 w-4 text-blue-500" />
+                              <div>
+                                <div className="font-medium">
+                                  From: {delivery.sender.name}
+                                </div>
+                              </div>
+                            </div>
+                          )}
+                          {delivery.receiver && (
+                            <div className="flex items-center gap-2 text-sm">
+                              <User className="h-4 w-4 text-green-500" />
+                              <div>
+                                <div className="font-medium">
+                                  To: {delivery.receiver.name}
+                                </div>
+                              </div>
+                            </div>
+                          )}
                         </div>
                       </td>
+
+                      {/* Pickup/Delivery Column */}
                       <td className="p-4">
-                        <div className="flex items-center gap-2 text-sm max-w-xs">
-                          <MapPin className="h-4 w-4 text-muted-foreground flex-shrink-0" />
-                          <span className="truncate">
-                            {delivery.deliveryAddress}
-                          </span>
+                        <div className="space-y-2">
+                          {delivery.pickupAddress && (
+                            <div className="flex items-start gap-2 text-sm">
+                              <MapPin className="h-4 w-4 text-orange-500 mt-0.5 flex-shrink-0" />
+                              <div>
+                                <div className="font-medium">Pickup:</div>
+                                <div className="text-muted-foreground break-words max-w-xs">
+                                  {delivery.pickupAddress}
+                                </div>
+                              </div>
+                            </div>
+                          )}
+                          {delivery.deliveryAddress && (
+                            <div className="flex items-start gap-2 text-sm">
+                              <MapPin className="h-4 w-4 text-green-500 mt-0.5 flex-shrink-0" />
+                              <div>
+                                <div className="font-medium">Delivery:</div>
+                                <div className="text-muted-foreground break-words max-w-xs">
+                                  {delivery.deliveryAddress}
+                                </div>
+                              </div>
+                            </div>
+                          )}
                         </div>
                       </td>
+
+                      {/* Status Column */}
                       <td className="p-4">
                         <Badge
                           variant={statusInfo.variant}
-                          className="flex items-center gap-1 w-fit"
+                          className="flex items-center gap-1 w-fit capitalize"
                         >
                           {statusInfo.icon}
-                          {delivery.status}
+                          {delivery.status?.replace("_", " ") || "completed"}
                         </Badge>
+                        {delivery.deliveryNotes && (
+                          <div className="text-xs text-muted-foreground mt-1 max-w-xs">
+                            📝 {delivery.deliveryNotes}
+                          </div>
+                        )}
                       </td>
+
+                      {/* Date Column */}
                       <td className="p-4">
-                        <div className="flex items-center gap-2 text-sm">
-                          <Calendar className="h-4 w-4 text-muted-foreground" />
-                          {delivery.deliveryDate
-                            ? new Date(
-                                delivery.deliveryDate
-                              ).toLocaleDateString()
-                            : "Not delivered"}
+                        <div className="space-y-1 text-sm">
+                          {delivery.updatedAt && (
+                            <div className="text-xs text-muted-foreground">
+                              <Calendar className="h-4 w-4" />
+                              {new Date(
+                                delivery.updatedAt
+                              ).toLocaleDateString()}
+                            </div>
+                          )}
                         </div>
                       </td>
                     </tr>

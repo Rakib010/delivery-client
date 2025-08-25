@@ -16,6 +16,8 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
+import { handleLoadingError } from "@/utils/ErrorHandle";
+import { getRoleVariant } from "@/utils/status";
 
 export default function AllUsers() {
   const { data, isLoading, isError, refetch } = useAllUsersQuery(undefined);
@@ -37,46 +39,20 @@ export default function AllUsers() {
     }
   };
 
-  const getRoleVariant = (role: string) => {
-    switch (role.toLowerCase()) {
-      case "admin":
-        return "destructive";
-      case "sender":
-        return "secondary";
-      case "receiver":
-        return "default";
-      default:
-        return "outline";
-    }
-  };
-
-  if (isLoading) {
-    return (
-      <div className="flex justify-center items-center min-h-screen">
-        <Loader2 className="animate-spin h-8 w-8" />
-      </div>
-    );
-  }
-
-  if (isError) {
-    return (
-      <div className="flex justify-center items-center min-h-screen">
-        <p className="text-destructive">Failed to load users</p>
-      </div>
-    );
-  }
+  // loading/error
+  const loadingErrorUI = handleLoadingError(isLoading, isError);
+  if (loadingErrorUI) return loadingErrorUI;
 
   return (
-    <div className="container mx-auto py-8 px-4">
-      <div className="flex flex-col items-center gap-2 mb-6">
-        <h1 className="text-2xl font-bold tracking-tight">User Management</h1>
-        <p className="mb-3 text-orange-400 ">
-          {data?.data?.length || 0} users in system
-        </p>
+    <div className="container mx-auto p-6">
+      <div className="flex flex-col items-center gap-2 mb-8">
+        <h1 className="text-xl font-bold text-center text-gray-600 dark:text-gray-400">
+          Controlling user accounts, roles, and access
+        </h1>
       </div>
 
       <Card>
-        <CardContent>
+        <CardContent className="font-mono">
           {!data?.data || data.data.length === 0 ? (
             <div className="text-center py-12">
               <User className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
@@ -87,61 +63,75 @@ export default function AllUsers() {
             </div>
           ) : (
             <div className="overflow-x-auto">
-              <table className="w-full">
+              <table className="w-full border-collapse rounded-lg overflow-hidden shadow-sm">
                 <thead>
-                  <tr className="border-b bg-muted/50">
-                    <th className="p-4 text-left font-medium">User Info</th>
-                    <th className="p-4 text-left font-medium">Contact</th>
-                    <th className="p-4 text-left font-medium">Role</th>
-                    <th className="p-4 text-left font-medium">Status</th>
-                    <th className="p-4 text-left font-medium">Action</th>
+                  <tr className="bg-stone-100 dark:bg-stone-800 text-stone-700 dark:text-stone-200">
+                    <th className="p-4 text-left font-semibold">User Info</th>
+                    <th className="p-4 text-left font-semibold">Contact</th>
+                    <th className="p-4 text-left font-semibold">Role</th>
+                    <th className="p-4 text-left font-semibold">Status</th>
+                    <th className="p-4 text-left font-semibold">Action</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {data.data.map((user: any) => (
-                    <tr key={user._id} className="border-b hover:bg-muted/30">
+                  {data.data.map((user: any, idx: number) => (
+                    <tr
+                      key={user._id}
+                      className={`${
+                        idx % 2 === 0
+                          ? "bg-white dark:bg-stone-900"
+                          : "bg-stone-50 dark:bg-stone-950"
+                      } hover:bg-amber-50 dark:hover:bg-stone-800 transition`}
+                    >
+                      {/* User Info */}
                       <td className="p-4">
                         <div className="flex items-center gap-3">
-                          <div className="bg-primary/10 p-2 rounded-full">
-                            <User className="h-4 w-4 text-primary" />
+                          <div className="bg-amber-100 dark:bg-stone-700 p-2 rounded-full">
+                            <User className="h-4 w-4 text-amber-600 dark:text-amber-400" />
                           </div>
                           <div>
                             <div className="font-medium capitalize">
                               {user.name || "Unknown User"}
                             </div>
-                            <div className="text-sm text-muted-foreground">
+                            <div className="text-xs text-muted-foreground">
                               ID: {user._id.slice(-8)}
                             </div>
                           </div>
                         </div>
                       </td>
-                      <td className="p-4">
+
+                      {/* Contact */}
+                      <td className="p-4 text-sm">
                         <div className="space-y-2">
-                          <div className="flex items-center gap-2 text-sm">
+                          <div className="flex items-center gap-2">
                             <Mail className="h-4 w-4 text-muted-foreground" />
                             {user.email}
                           </div>
                           {user.phone && (
-                            <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                            <div className="flex items-center gap-2 text-muted-foreground">
                               <Phone className="h-4 w-4" />
                               {user.phone}
                             </div>
                           )}
                         </div>
                       </td>
+
+                      {/* Role */}
                       <td className="p-4">
                         <Badge
                           variant={getRoleVariant(user.role)}
-                          className="capitalize"
+                          className="capitalize px-2 py-1"
                         >
                           <Shield className="h-3 w-3 mr-1" />
                           {user.role.toLowerCase()}
                         </Badge>
                       </td>
+
+                      {/* Status */}
                       <td className="p-4">
                         <Badge
-                          variant={user.isBlock ? "destructive" : "default"}
-                          className="flex items-center gap-1"
+                          variant={user.isBlock ? "destructive" : "secondary"}
+                          className="flex items-center gap-1 px-2 py-1"
                         >
                           {user.isBlock ? (
                             <>
@@ -156,9 +146,11 @@ export default function AllUsers() {
                           )}
                         </Badge>
                       </td>
+
+                      {/* Action */}
                       <td className="p-4">
                         <Button
-                          variant={user.isBlock ? "default" : "destructive"}
+                          variant={user.isBlock ? "secondary" : "destructive"}
                           size="sm"
                           onClick={() => handleToggleBlock(user._id)}
                           disabled={isManaging}

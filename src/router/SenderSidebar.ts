@@ -1,5 +1,5 @@
 import CancelParcel from "@/page/Sender/CancelParcel";
-import createParcel from "@/page/Sender/createParcel";
+import CreateParcel from "@/page/Sender/CreateParcel";
 import ViewParcels from "@/page/Sender/ViewParcels";
 import type { ISidebarItem } from "@/types";
 
@@ -10,17 +10,20 @@ export const SenderSidebar: ISidebarItem[] = [
             {
                 title: "Create parcel delivery",
                 url: "/sender/create-parcel",
-                component: createParcel
+                component: CreateParcel,
+                isActive: undefined
             },
             {
                 title: "Cancel parcel",
                 url: "/sender/cancel-parcel",
-                component: CancelParcel
+                component: CancelParcel,
+                isActive: undefined
             },
             {
                 title: "View all parcels",
                 url: "/sender/view-parcel",
-                component: ViewParcels
+                component: ViewParcels,
+                isActive: undefined
             },
         ],
     },

@@ -15,19 +15,30 @@ export const AdminApi = baseApi.injectEndpoints({
             })
         }),
         manageUser: builder.mutation({
-            query: (id: string) => ({
+            query: (id) => ({
                 url: `/user/block-toggle/${id}`,
                 method: "PATCH",
             }),
         }),
+        trackingParcel: builder.query({
+            query: (id) => ({
+                url: `/user/tracking/${id}`,
+                method: "GET",
+            }),
+        }),
         updatedParcelStatus: builder.mutation({
-            query: ({ id, newStatus, location, note }) => ({
+            query: ({ id, status, location, note }) => ({
                 url: `/user/update-parcel-status/${id}`,
                 method: "PATCH",
-                body: { newStatus, location, note },
+                data: { status, location, note },
             }),
         }),
     })
 })
 
-export const { useAllUsersQuery, useManageUserMutation, useAllParcelsQuery, useUpdatedParcelStatusMutation } = AdminApi
+export const {
+    useAllUsersQuery,
+    useManageUserMutation,
+    useAllParcelsQuery,
+    useUpdatedParcelStatusMutation,
+    useTrackingParcelQuery } = AdminApi

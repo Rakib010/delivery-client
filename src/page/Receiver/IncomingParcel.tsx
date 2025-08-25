@@ -2,87 +2,32 @@
 import { useIncomingParcelsQuery } from "@/redux/features/receiver/receiver.api";
 import {
   Package,
-  Truck,
   Clock,
-  AlertCircle,
+  MapPin,
+  User,
+  Calendar,
   Phone,
   Navigation,
-  Loader2,
+  Mail,
 } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { handleLoadingError } from "@/utils/ErrorHandle";
+import { getStatusInfo } from "@/utils/status";
 
 export default function IncomingParcel() {
   const { data, isLoading, isError } = useIncomingParcelsQuery(undefined);
+  console.log("Parcel Data:", data);
 
-  if (isLoading)
-    return (
-      <div className="flex justify-center items-center min-h-screen">
-        <Loader2 className="animate-spin h-8 w-8" />
-      </div>
-    );
-
-  if (isError)
-    return (
-      <div className="flex justify-center items-center min-h-screen">
-        <p>Failed to load parcels</p>
-      </div>
-    );
-
-  // Combined status icon and styling
-  const getStatusInfo = (status: string) => {
-    switch (status) {
-      case "DISPATCHED":
-        return {
-          icon: <Truck className="h-4 w-4" />,
-          variant: "secondary" as const,
-          textColor: "text-blue-600",
-          bgColor: "bg-blue-100",
-        };
-      case "DELIVERED":
-        return {
-          icon: <Package className="h-4 w-4" />,
-          variant: "default" as const,
-          textColor: "text-green-600",
-          bgColor: "bg-green-100",
-        };
-      case "IN_TRANSIT":
-        return {
-          icon: <Truck className="h-4 w-4" />,
-          variant: "outline" as const,
-          textColor: "text-orange-600",
-          bgColor: "bg-orange-100",
-        };
-      case "PENDING":
-        return {
-          icon: <Clock className="h-4 w-4" />,
-          variant: "outline" as const,
-          textColor: "text-gray-600",
-          bgColor: "bg-gray-100",
-        };
-      case "CANCELLED":
-        return {
-          icon: <AlertCircle className="h-4 w-4" />,
-          variant: "destructive" as const,
-          textColor: "text-red-600",
-          bgColor: "bg-red-100",
-        };
-      default:
-        return {
-          icon: <Package className="h-4 w-4" />,
-          variant: "outline" as const,
-          textColor: "text-gray-600",
-          bgColor: "bg-gray-100",
-        };
-    }
-  };
+  const loadingErrorUI = handleLoadingError(isLoading, isError);
+  if (loadingErrorUI) return loadingErrorUI;
 
   return (
-    <div className="container mx-auto py-8 px-4">
-      <div className="flex flex-col gap-2 mb-6">
-        <h1 className="text-3xl font-bold tracking-tight">Incoming Parcels</h1>
-        <p className="text-muted-foreground">
-          {data?.data?.length || 0} parcel(s) heading your way
+    <div className="container mx-auto px-4 font-mono">
+      <div className="flex flex-col gap-2 mb-6 text-center text-gray-900 dark:text-gray-200">
+        <h1 className="text-3xl">Incoming Parcels</h1>
+        <p className="text-xl">
+          {data?.data?.length || 0} parcels heading your way
         </p>
       </div>
 
@@ -101,12 +46,15 @@ export default function IncomingParcel() {
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead>
-                <tr className="border-b ">
-                  <th className="p-4 text-left font-medium">Type</th>
-                  <th className="p-4 text-left font-medium">Phone</th>
+                <tr className="border-b bg-muted/50">
                   <th className="p-4 text-left font-medium">
-                    Delivery Address
+                    Parcel Information
                   </th>
+                  <th className="p-4 text-left font-medium">Sender Details</th>
+                  <th className="p-4 text-left font-medium">
+                    Delivery Details
+                  </th>
+                  <th className="p-4 text-left font-medium">Timeline</th>
                   <th className="p-4 text-left font-medium">Status</th>
                 </tr>
               </thead>
@@ -115,38 +63,154 @@ export default function IncomingParcel() {
                   const statusInfo = getStatusInfo(parcel.status);
                   return (
                     <tr key={parcel._id} className="border-b hover:bg-muted/30">
+                      {/* Parcel Information */}
                       <td className="p-4">
-                        <div className="flex items-center gap-2">
-                          <div className="bg-primary/10 p-2 rounded-lg">
-                            <Package className="h-4 w-4 text-primary" />
+                        <div className="flex items-start gap-3">
+                          <div className="bg-primary/10 p-2 rounded-lg flex-shrink-0">
+                            <Package className="h-5 w-5 text-primary" />
                           </div>
-                          <span className="font-medium capitalize">
-                            {parcel.type}
-                          </span>
+                          <div className="space-y-1">
+                            <div className="font-medium capitalize">
+                              {parcel.type || "Package"}
+                            </div>
+                            {parcel.trackingId && (
+                              <div className="text-sm text-muted-foreground font-mono">
+                                Track ID: {parcel.trackingId}
+                              </div>
+                            )}
+                            {parcel.description && (
+                              <div className="text-sm text-muted-foreground">
+                                {parcel.description}
+                              </div>
+                            )}
+                            {parcel.weight && (
+                              <div className="text-sm text-muted-foreground">
+                                Weight: {parcel.weight} kg
+                              </div>
+                            )}
+                          </div>
                         </div>
                       </td>
+
+                      {/* Sender Details */}
                       <td className="p-4">
-                        <div className="flex items-center gap-2 text-sm">
-                          <Phone className="h-4 w-4 text-muted-foreground" />
-                          {parcel.phoneNumber}
+                        <div className="space-y-2">
+                          {parcel.sender && (
+                            <>
+                              <div className="flex items-center gap-2 text-sm">
+                                <User className="h-4 w-4 text-muted-foreground" />
+                                <span className="font-medium">
+                                  {parcel.sender.name || "Unknown Sender"}
+                                </span>
+                              </div>
+                              {parcel.sender.email && (
+                                <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                                  <Mail className="h-4 w-4" />
+                                  {parcel.sender.email}
+                                </div>
+                              )}
+                              {parcel.sender.phone && (
+                                <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                                  <Phone className="h-4 w-4" />
+                                  {parcel.sender.phone}
+                                </div>
+                              )}
+                              {parcel.sender.address && (
+                                <div className="flex items-start gap-2 text-sm text-muted-foreground">
+                                  <MapPin className="h-4 w-4 mt-0.5 flex-shrink-0" />
+                                  <span className="break-words max-w-xs">
+                                    {parcel.sender.address}
+                                  </span>
+                                </div>
+                              )}
+                            </>
+                          )}
+                          {!parcel.sender && parcel.senderContact && (
+                            <div className="text-sm text-muted-foreground">
+                              Contact: {parcel.senderContact}
+                            </div>
+                          )}
                         </div>
                       </td>
+
+                      {/* Delivery Details */}
                       <td className="p-4">
-                        <div className="flex items-center gap-2 text-sm max-w-xs">
-                          <Navigation className="h-4 w-4 text-muted-foreground flex-shrink-0" />
-                          <span className="truncate">
-                            {parcel.deliveryAddress}
-                          </span>
+                        <div className="space-y-2">
+                          <div className="flex items-start gap-2 text-sm">
+                            <MapPin className="h-4 w-4 text-muted-foreground mt-0.5 flex-shrink-0" />
+                            <span className="break-words max-w-xs">
+                              {parcel.deliveryAddress || "No address provided"}
+                            </span>
+                          </div>
+                          {parcel.pickupAddress && (
+                            <div className="flex items-start gap-2 text-sm text-muted-foreground">
+                              <Navigation className="h-4 w-4 mt-0.5 flex-shrink-0" />
+                              <span className="break-words max-w-xs">
+                                Pickup: {parcel.pickupAddress}
+                              </span>
+                            </div>
+                          )}
+                          {parcel.currentLocation && (
+                            <div className="flex items-start gap-2 text-sm text-muted-foreground">
+                              <Navigation className="h-4 w-4 mt-0.5 flex-shrink-0" />
+                              <span className="break-words max-w-xs">
+                                Current: {parcel.currentLocation}
+                              </span>
+                            </div>
+                          )}
                         </div>
                       </td>
+
+                      {/* Timeline */}
+                      <td className="p-4">
+                        <div className="space-y-1 text-sm">
+                          {parcel.sendDate && (
+                            <div className="flex items-center gap-2 text-muted-foreground">
+                              <Calendar className="h-4 w-4" />
+                              Sent:{" "}
+                              {new Date(parcel.sendDate).toLocaleDateString()}
+                            </div>
+                          )}
+                          {parcel.estimatedDelivery && (
+                            <div className="flex items-center gap-2 text-muted-foreground">
+                              <Calendar className="h-4 w-4" />
+                              Est:{" "}
+                              {new Date(
+                                parcel.estimatedDelivery
+                              ).toLocaleDateString()}
+                            </div>
+                          )}
+                          {parcel.createdAt && (
+                            <div className="flex items-center gap-2 text-muted-foreground">
+                              <Clock className="h-4 w-4" />
+                              Created:{" "}
+                              {new Date(parcel.createdAt).toLocaleDateString()}
+                            </div>
+                          )}
+                          {parcel.updatedAt && (
+                            <div className="flex items-center gap-2 text-muted-foreground">
+                              <Clock className="h-4 w-4" />
+                              Updated:{" "}
+                              {new Date(parcel.updatedAt).toLocaleDateString()}
+                            </div>
+                          )}
+                        </div>
+                      </td>
+
+                      {/* Status */}
                       <td className="p-4">
                         <Badge
                           variant={statusInfo.variant}
-                          className="flex items-center gap-1 w-fit"
+                          className="flex items-center gap-1 w-fit capitalize"
                         >
                           {statusInfo.icon}
-                          {parcel.status}
+                          {parcel.status?.replace("_", " ") || "pending"}
                         </Badge>
+                        {parcel.deliveryNotes && (
+                          <div className="text-xs text-muted-foreground mt-1">
+                            Note: {parcel.deliveryNotes}
+                          </div>
+                        )}
                       </td>
                     </tr>
                   );
