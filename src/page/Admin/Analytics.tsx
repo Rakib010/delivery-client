@@ -1,6 +1,4 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-"use client";
-
 import { useStatsParcelsQuery } from "@/redux/features/admin/admin.api";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
