@@ -33,6 +33,13 @@ export const AdminApi = baseApi.injectEndpoints({
                 data: { status, location, note },
             }),
         }),
+        statsParcels: builder.query({
+            query: () => ({
+                url: "/stats/overViewParcel",
+                method: "GET",
+            })
+        }),
+
     })
 })
 
@@ -41,4 +48,6 @@ export const {
     useManageUserMutation,
     useAllParcelsQuery,
     useUpdatedParcelStatusMutation,
-    useTrackingParcelQuery } = AdminApi
+    useTrackingParcelQuery,
+    useStatsParcelsQuery
+} = AdminApi

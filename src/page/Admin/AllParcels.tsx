@@ -48,7 +48,7 @@ export default function AllParcels() {
   return (
     <div className="container mx-auto p-6 font-mono ">
       <div className="mb-8">
-        <p className="text-xl font-bold text-center text-gray-600 dark:text-gray-400 ">
+        <p className="text-3xl font-bold text-center text-gray-600 dark:text-gray-400 ">
           View and manage all parcels in the system
         </p>
       </div>

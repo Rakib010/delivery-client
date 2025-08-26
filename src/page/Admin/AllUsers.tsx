@@ -46,7 +46,7 @@ export default function AllUsers() {
   return (
     <div className="container mx-auto p-6">
       <div className="flex flex-col items-center gap-2 mb-8">
-        <h1 className="text-xl font-bold text-center text-gray-600 dark:text-gray-400">
+        <h1 className="text-3xl font-bold text-center text-gray-600 dark:text-gray-400">
           Controlling user accounts, roles, and access
         </h1>
       </div>
