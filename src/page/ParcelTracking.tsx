@@ -14,7 +14,7 @@ import {
 import { useEffect, useState } from "react";
 import { handleLoadingError } from "@/utils/ErrorHandle";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { getStatusIcon} from "@/utils/status";
+import { getStatusIcon } from "@/utils/status";
 
 export default function ParcelTracking() {
   const [submittedTrackingId, setSubmittedTrackingId] = useState("");
@@ -39,7 +39,7 @@ export default function ParcelTracking() {
 
   useEffect(() => {
     if (parcelData) {
-      console.log("Parcel Data:", parcelData);
+      //console.log("Parcel Data:", parcelData);
     }
   }, [parcelData]);
 
@@ -111,88 +111,83 @@ export default function ParcelTracking() {
         {/* Show loading or error state */}
         {isLoading || isError ? loadingErrorUI : null}
 
+        {/* Parcel Data Display */}
         {parcelData && parcelData.data && (
-          <div className="max-w-4xl mx-auto">
-            {/* Package Summary Card */}
-            <Card className="mb-8">
-              <CardHeader className="pb-4">
-                <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-                  <CardTitle className="text-2xl">Parcel Details</CardTitle>
-                  <div className="flex items-center gap-2 px-4 py-2 bg-amber-100 dark:bg-amber-900/30 rounded-lg">
-                    {getStatusIcon(parcelData.data.type)}
-                    <span className="font-semibold text-amber-800 dark:text-amber-200">
-                      {getStatusText(parcelData.data.type)}
+          <div className="max-w-4xl mx-auto space-y-6">
+            {/* Parcel Summary Card */}
+            <Card className="border rounded-xl shadow-sm">
+              <CardHeader className="pb-3">
+                <div className="flex justify-between items-center">
+                  <CardTitle className="text-2xl font-semibold">
+                    Parcel Details
+                  </CardTitle>
+                  <div className="flex items-center gap-2 bg-amber-100 dark:bg-amber-900/30 px-3 py-1 rounded-lg">
+                    {getStatusIcon(parcelData.data.status)}
+                    <span className="font-medium text-amber-800 dark:text-amber-200 capitalize">
+                      {parcelData.data.status.replace("_", " ")}
                     </span>
                   </div>
                 </div>
               </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div>
-                    <h3 className="font-semibold text-stone-800 dark:text-stone-100 mb-2">
-                      Delivery Address
-                    </h3>
-                    <p className="text-stone-600 dark:text-stone-400">
-                      {parcelData.data.deliveryAddress || "Not specified"}
-                    </p>
-                  </div>
-
-                  <div>
-                    <h3 className="font-semibold text-stone-800 dark:text-stone-100 mb-2">
-                      Tracking ID
-                    </h3>
-                    <p className="text-stone-600 dark:text-stone-400 font-mono">
-                      {submittedTrackingId}
-                    </p>
-                  </div>
+              <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-4 text-stone-700 dark:text-stone-200">
+                <div>
+                  <h4 className="font-medium mb-1">Tracking ID</h4>
+                  <p className="font-mono">{submittedTrackingId}</p>
+                </div>
+                <div>
+                  <h4 className="font-medium mb-1">Parcel Type</h4>
+                  <p>{parcelData.data.type}</p>
+                </div>
+                <div>
+                  <h4 className="font-medium mb-1">Delivery Address</h4>
+                  <p>{parcelData.data.deliveryAddress || "Not specified"}</p>
+                </div>
+                <div>
+                  <h4 className="font-medium mb-1">Weight & Fee</h4>
+                  <p>
+                    {parcelData.data.weight} kg | Fee: ${parcelData.data.fee}
+                  </p>
                 </div>
               </CardContent>
             </Card>
 
             {/* Status Timeline Card */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-xl">Status History</CardTitle>
+            <Card className="border rounded-xl shadow-sm">
+              <CardHeader className="pb-3">
+                <CardTitle className="text-xl font-semibold">
+                  Status History
+                </CardTitle>
               </CardHeader>
-              <CardContent>
-                <div className="space-y-2">
-                  {parcelData.data.trackingEvents.map(
-                    (log: any, index: number) => (
-                      <div
-                        key={index}
-                        className="flex items-start p-4 border border-stone-200 dark:border-stone-700 rounded-lg"
-                      >
-                        <div className="flex-shrink-0 mr-4">
-                          {getStatusIcon(log.status)}
-                        </div>
-                        <div className="flex-1">
-                          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-2">
-                            <span className="font-semibold text-stone-800 dark:text-stone-100">
-                            {/*   {getStatusText(log.status)} */}
-                            </span>
-                            <span className="text-sm text-stone-500 dark:text-stone-400">
-                              {log.timestamp
-                                ? new Date(log.timestamp).toLocaleString()
-                                : "Date not available"}
-                            </span>
-                          </div>
-
-                          {log.updatedBy && (
-                            <p className="text-sm text-stone-600 dark:text-stone-300 mb-2">
-                              Updated by: {"Admin"}
-                            </p>
-                          )}
-
-                          {log.note && (
-                            <p className="text-stone-700 dark:text-stone-200 bg-stone-100 dark:bg-stone-800 p-3 rounded-lg text-sm">
-                              {log.note}
-                            </p>
-                          )}
-                        </div>
+              <CardContent className="space-y-3">
+                {parcelData.data.trackingEvents.map(
+                  (log: any, index: number) => (
+                    <div
+                      key={index}
+                      className="flex gap-4 p-3 border border-stone-200 dark:border-stone-700 rounded-lg bg-stone-50 dark:bg-stone-900"
+                    >
+                      <div className="flex-shrink-0">
+                        {getStatusIcon(log.status)}
                       </div>
-                    )
-                  )}
-                </div>
+                      <div className="flex-1">
+                        <div className="flex justify-between items-center mb-1">
+                          <span className="font-medium capitalize">
+                            {log.status.replace("_", " ")}
+                          </span>
+                          <span className="text-sm text-stone-500 dark:text-stone-400">
+                            {log.timestamp
+                              ? new Date(log.timestamp).toLocaleString()
+                              : "No timestamp"}
+                          </span>
+                        </div>
+                        {log.note && (
+                          <p className="text-sm bg-stone-100 dark:bg-stone-800 p-2 rounded-lg">
+                            {log.note}
+                          </p>
+                        )}
+                      </div>
+                    </div>
+                  )
+                )}
               </CardContent>
             </Card>
           </div>

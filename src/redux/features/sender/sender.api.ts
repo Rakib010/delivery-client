@@ -7,21 +7,25 @@ export const SenderApi = baseApi.injectEndpoints({
                 url: "/parcel/create",
                 method: "POST",
                 data: parcelInfo,
-            })
+            }),
+            invalidatesTags: ["PARCEL"]
         }),
         getParcels: builder.query({
-            query: () => ({
+            query: (params) => ({
                 url: "/parcel/me",
                 method: "GET",
-            })
+                params
+            }),
+            providesTags: ["PARCEL"],
         }),
         cancelParcel: builder.mutation({
             query: (id: string) => ({
                 url: `parcel/cancel/${id}`,
                 method: "PATCH",
             }),
+            invalidatesTags: ["PARCEL"]
         }),
     })
 })
 
-export const { useCreateParcelMutation, useGetParcelsQuery,useCancelParcelMutation } = SenderApi
+export const { useCreateParcelMutation, useGetParcelsQuery, useCancelParcelMutation } = SenderApi

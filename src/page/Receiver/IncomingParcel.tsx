@@ -13,11 +13,11 @@ import {
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { handleLoadingError } from "@/utils/ErrorHandle";
-import { getStatusInfo } from "@/utils/status";
+import { getStatusIcon, getStatusInfo, getStatusVariant } from "@/utils/status";
 
 export default function IncomingParcel() {
   const { data, isLoading, isError } = useIncomingParcelsQuery(undefined);
-  console.log("Parcel Data:", data);
+  //console.log("Parcel Data:", data);
 
   const loadingErrorUI = handleLoadingError(isLoading, isError);
   if (loadingErrorUI) return loadingErrorUI;
@@ -25,8 +25,7 @@ export default function IncomingParcel() {
   return (
     <div className="container mx-auto px-4 font-mono">
       <div className="flex flex-col gap-2 mb-6 text-center text-gray-900 dark:text-gray-200">
-        <h1 className="text-3xl">Incoming Parcels</h1>
-        <p className="text-xl">
+        <p className="text-3xl my-4 ">
           {data?.data?.length || 0} parcels heading your way
         </p>
       </div>
@@ -198,19 +197,17 @@ export default function IncomingParcel() {
                       </td>
 
                       {/* Status */}
+                      {/* Status */}
                       <td className="p-4">
-                        <Badge
-                          variant={statusInfo.variant}
-                          className="flex items-center gap-1 w-fit capitalize"
-                        >
-                          {statusInfo.icon}
-                          {parcel.status?.replace("_", " ") || "pending"}
-                        </Badge>
-                        {parcel.deliveryNotes && (
-                          <div className="text-xs text-muted-foreground mt-1">
-                            Note: {parcel.deliveryNotes}
-                          </div>
-                        )}
+                        <div className="flex items-center gap-2">
+                          {getStatusIcon(parcel.status)}
+                          <Badge
+                            variant={getStatusVariant(parcel.status)}
+                            className="flex items-center gap-1 w-fit capitalize"
+                          >
+                            {parcel.status?.replace("_", " ") || "pending"}
+                          </Badge>
+                        </div>
                       </td>
                     </tr>
                   );

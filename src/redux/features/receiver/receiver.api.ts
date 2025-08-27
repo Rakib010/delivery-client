@@ -6,19 +6,22 @@ export const receiverApi = baseApi.injectEndpoints({
             query: () => ({
                 url: "/parcel/incoming-parcels",
                 method: "GET",
-            })
+            }),
+            providesTags: ["PARCEL"],
         }),
         deliveryHistory: builder.query({
             query: () => ({
                 url: "/parcel/delivery-history",
                 method: "GET",
-            })
+            }),
+            providesTags: ["PARCEL"],
         }),
         confirmParcelDelivery: builder.mutation({
             query: (id: string) => ({
                 url: `/parcel/confirm-delivery/${id}`,
                 method: "PATCH",
             }),
+            invalidatesTags: ["PARCEL"]
         }),
     })
 })

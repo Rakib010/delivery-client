@@ -23,17 +23,16 @@ import {
 import { useReceiverInfoQuery } from "@/redux/features/auth/auth.api";
 import type { TParcels } from "@/utils/types";
 
-
 export default function CreateParcel() {
   const form = useForm<TParcels>({
     defaultValues: {
-      type: "",
-      weight: "",
-      fee: "",
-      phoneNumber: "",
-      pickupAddress: "",
-      deliveryAddress: "",
-      deliveryDate: "",
+      type: "Document",
+      weight: "2kg",
+      fee: "200",
+      phoneNumber: "01712345678",
+      pickupAddress: "Dhaka, Mirpur",
+      deliveryAddress: "Chittagong",
+      deliveryDate: "2025-08-30",
       receiver: "",
     },
   });
@@ -46,7 +45,6 @@ export default function CreateParcel() {
       // console.log(res);
       if (res.success) {
         toast.success("parcel created successfully");
-        form.reset();
       }
     } catch (error) {
       //console.log(error);

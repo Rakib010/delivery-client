@@ -14,11 +14,9 @@ export default function DeliveryHistory() {
   return (
     <div className="container mx-auto  px-4 font-mono">
       <div className="flex flex-col gap-2 mb-6 text-center">
-        <h1 className="text-3xl text-gray-900 dark:text-gray-200">
-          Delivery History
-        </h1>
-        <p className="text-xl">
-          {data?.data?.length || 0} completed delivery<span className="text-orange-400">s</span>
+        <p className="text-3xl my-4 text-gray-900 dark:text-gray-200">
+          {data?.data?.length || 0} completed delivery
+          <span className="text-orange-400">s</span>
         </p>
       </div>
 
@@ -148,7 +146,7 @@ export default function DeliveryHistory() {
                       <td className="p-4">
                         <div className="space-y-1 text-sm">
                           {delivery.updatedAt && (
-                            <div className="text-xs text-muted-foreground">
+                            <div className="text-xs flex gap-1 text-muted-foreground">
                               <Calendar className="h-4 w-4" />
                               {new Date(
                                 delivery.updatedAt

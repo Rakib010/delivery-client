@@ -55,7 +55,7 @@ export default function SenderParcels() {
                 <tr className="border-b bg-muted/50">
                   <th className="p-4 text-left font-medium">Parcel Type</th>
                   <th className="p-4 text-left font-medium">Status</th>
-                  <th className="p-4 text-left font-medium">Created</th>
+                  <th className="p-4 text-left font-medium">Delivery Date</th>
                   <th className="p-4 text-left font-medium">Actions</th>
                 </tr>
               </thead>

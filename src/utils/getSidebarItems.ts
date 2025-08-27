@@ -1,4 +1,3 @@
-
 import { adminSidebar } from "@/router/adminSidebar";
 import { ReceiverSidebar } from "@/router/ReceiverSidebar";
 import { SenderSidebar } from "@/router/SenderSidebar";

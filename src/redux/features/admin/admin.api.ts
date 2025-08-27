@@ -6,13 +6,16 @@ export const AdminApi = baseApi.injectEndpoints({
             query: () => ({
                 url: "/user/all-users",
                 method: "GET",
-            })
+            }),
+            providesTags: ["USER"]
         }),
         allParcels: builder.query({
-            query: () => ({
+            query: (params) => ({
                 url: "/user/all-parcels",
                 method: "GET",
-            })
+                params
+            }),
+            providesTags: ["PARCEL"]
         }),
         manageUser: builder.mutation({
             query: (id) => ({
@@ -25,6 +28,7 @@ export const AdminApi = baseApi.injectEndpoints({
                 url: `/user/tracking/${id}`,
                 method: "GET",
             }),
+            providesTags: ["PARCEL"]
         }),
         updatedParcelStatus: builder.mutation({
             query: ({ id, status, location, note }) => ({
@@ -32,12 +36,14 @@ export const AdminApi = baseApi.injectEndpoints({
                 method: "PATCH",
                 data: { status, location, note },
             }),
+            invalidatesTags: ["PARCEL"]
         }),
         statsParcels: builder.query({
             query: () => ({
                 url: "/stats/overViewParcel",
                 method: "GET",
-            })
+            }),
+            providesTags: ["PARCEL"]
         }),
 
     })

@@ -8,13 +8,13 @@ import { Badge } from "@/components/ui/badge";
 import { Package, CheckCircle } from "lucide-react";
 import { toast } from "sonner";
 import { handleLoadingError } from "@/utils/ErrorHandle";
+import { getStatusIcon, getStatusVariant } from "@/utils/status";
 
 export default function ConfirmParcel() {
   const { data, isLoading, isError, refetch } =
     useIncomingParcelsQuery(undefined);
   const [confirmParcel, { isLoading: isConfirming }] =
     useConfirmParcelDeliveryMutation();
-  console.log(confirmParcel);
 
   const handleConfirmParcel = async (id: string) => {
     try {
@@ -24,7 +24,7 @@ export default function ConfirmParcel() {
         refetch();
       }
     } catch (error) {
-      console.error("Failed to confirm parcel:", error);
+      //console.error("Failed to confirm parcel:", error);
       toast.error("Failed to confirm parcel delivery");
     }
   };
@@ -34,8 +34,8 @@ export default function ConfirmParcel() {
 
   return (
     <div className="container mx-auto p-6 font-mono ">
-      <div className="mb-8">
-        <p className="text-center text-3xl text-gray-900 dark:text-gray-200">
+      <div className="mb-6">
+        <p className="text-center text-3xl text-gray-900 dark:text-gray-200 mb-6">
           Confirm delivery of your incoming parcels
         </p>
       </div>
@@ -87,22 +87,17 @@ export default function ConfirmParcel() {
                       </div>
                     </td>
 
+                    {/* status */}
                     <td className="px-6 py-4">
-                      <Badge
-                        variant={
-                          parcel.status === "delivered"
-                            ? "default"
-                            : "secondary"
-                        }
-                        className="flex items-center gap-1 w-fit"
-                      >
-                        {parcel.status === "delivered" ? (
-                          <CheckCircle className="h-3 w-3" />
-                        ) : (
-                          <Package className="h-3 w-3" />
-                        )}
-                        {parcel.status}
-                      </Badge>
+                      <div className="flex items-center gap-2">
+                        {getStatusIcon(parcel.status)}
+                        <Badge
+                          variant={getStatusVariant(parcel.status)}
+                          className="capitalize"
+                        >
+                          {parcel.status?.replace("_", " ") || "pending"}
+                        </Badge>
+                      </div>
                     </td>
 
                     <td className="px-6 py-4">
