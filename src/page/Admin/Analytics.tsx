@@ -133,7 +133,6 @@ export default function Analytics() {
 
       {/* Charts Section */}
       <div className="grid md:grid-cols-2 gap-6">
-
         {/* Pie Chart - Status Distribution */}
         <Card className="bg-card border-border">
           <CardHeader>
@@ -153,11 +152,11 @@ export default function Analytics() {
                   paddingAngle={5}
                   dataKey="value"
                   label={({ name, percent }) =>
-                    `${name} (${(percent * 100).toFixed(0)}%)`
+                    `${name} (${(Number(percent) * 100).toFixed(0)}%)`
                   }
                   labelLine={false}
                 >
-                  {statusData.map((entry: any, index: number) => (
+                  {statusData.map((index: number) => (
                     <Cell
                       key={`cell-${index}`}
                       fill={COLORS[index % COLORS.length]}
@@ -267,7 +266,6 @@ export default function Analytics() {
           </ResponsiveContainer>
         </CardContent>
       </Card>
-      
     </div>
   );
 }

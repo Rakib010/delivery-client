@@ -1,9 +1,9 @@
 import { useUserInfoQuery } from "@/redux/features/auth/auth.api";
-import type { TRole } from "@/types";
+import type { Role } from "@/types";
 import type { ComponentType } from "react";
 import { Navigate } from "react-router";
 
-export const withAuth = (Component: ComponentType, requiredRole?: TRole) => {
+export const withAuth = (Component: ComponentType, requiredRole?: Role) => {
   return function AuthWrapper() {
     const { data, isLoading } = useUserInfoQuery(undefined);
     //console.log(data);

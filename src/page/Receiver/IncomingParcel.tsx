@@ -59,7 +59,7 @@ export default function IncomingParcel() {
               </thead>
               <tbody>
                 {data.data.map((parcel: any) => {
-                  const statusInfo = getStatusInfo(parcel.status);
+                  getStatusInfo(parcel.status);
                   return (
                     <tr key={parcel._id} className="border-b hover:bg-muted/30">
                       {/* Parcel Information */}

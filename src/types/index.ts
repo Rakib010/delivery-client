@@ -22,4 +22,4 @@ export const role = {
     receiver: "RECEIVER",
 };
 
-export type TRole = "ADMIN" | "SENDER" | "RECEIVER";
+export type Role = "ADMIN" | "SENDER" | "RECEIVER";

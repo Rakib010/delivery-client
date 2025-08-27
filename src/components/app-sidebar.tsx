@@ -14,13 +14,17 @@ import {
 import { Link } from "react-router";
 import { getSidebarItems } from "@/utils/getSidebarItems";
 import { useUserInfoQuery } from "@/redux/features/auth/auth.api";
+import { handleLoadingError } from "@/utils/ErrorHandle";
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
-  const { data: userData } = useUserInfoQuery(undefined);
+  const { data: userData, isLoading, isError } = useUserInfoQuery(undefined);
 
   const data = {
     navMain: getSidebarItems(userData?.data?.role),
   };
+
+  const loadingErrorUI = handleLoadingError(isLoading, isError);
+  if (loadingErrorUI) return loadingErrorUI;
 
   return (
     <Sidebar {...props}>

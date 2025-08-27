@@ -34,12 +34,12 @@ const Contact = () => {
     message: "",
   });
 
-  const handleChange = (e:any) => {
+  const handleChange = (e: any) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = (e:any) => {
+  const handleSubmit = (e: any) => {
     e.preventDefault();
     toast.success("Message sent successfully! We'll contact you soon.");
     setFormData({ name: "", email: "", subject: "", message: "" });
@@ -169,7 +169,6 @@ const Contact = () => {
                     name="message"
                     value={formData.message}
                     onChange={handleChange}
-                    rows="5"
                     placeholder="Your message"
                     className="w-full px-4 py-3 border border-stone-300 dark:border-stone-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500 dark:bg-stone-700 dark:text-white"
                     required

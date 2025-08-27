@@ -16,7 +16,7 @@ import {
 
 export default function ViewParcels() {
   const [currentPage, setCurrentPage] = useState(1);
-  const [limit, setLimit] = useState(5);
+  const limit = 5;
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("");
 

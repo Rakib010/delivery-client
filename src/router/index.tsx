@@ -1,4 +1,3 @@
-import { Role } from "../../../delivery-server/src/app/modules/user/user.interface";
 import App from "@/App";
 import DashboardLayout from "@/layout/DashboardLayout";
 import About from "@/page/About";
@@ -7,7 +6,7 @@ import Register from "@/page/auth/Register";
 import Contact from "@/page/Contact";
 import Home from "@/page/Home/Home";
 import Unauthorized from "@/page/Unauthorized";
-import { role, type TRole } from "@/types";
+import { role, type Role } from "@/types";
 import { generateRoutes } from "@/utils/generateRoutes";
 import { withAuth } from "@/utils/withAuth";
 import { createBrowserRouter } from "react-router";
@@ -52,7 +51,7 @@ export const router = createBrowserRouter([
 
   /* Dashboard Sender */
   {
-    Component: withAuth(DashboardLayout, role.sender as TRole),
+    Component: withAuth(DashboardLayout, role.sender as Role),
     path: "/sender",
     children: [
       { index: true, element: <Navigate to="/sender/view-parcel" /> },
@@ -61,7 +60,7 @@ export const router = createBrowserRouter([
   },
   /* Dashboard Receiver */
   {
-    Component: withAuth(DashboardLayout, role.receiver as TRole),
+    Component: withAuth(DashboardLayout, role.receiver as Role),
     path: "/receiver",
     children: [
       { index: true, element: <Navigate to="/receiver/incoming-parcel" /> },

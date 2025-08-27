@@ -16,13 +16,14 @@ import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { useLoginMutation } from "@/redux/features/auth/auth.api";
 import p1 from "../../assets/login1.avif";
+import { handleLoadingError } from "@/utils/ErrorHandle";
 
 export function LoginForm({
   className,
   ...props
 }: React.ComponentProps<"div">) {
   const form = useForm();
-  const [login] = useLoginMutation();
+  const [login, { isLoading, isError }] = useLoginMutation();
   const navigate = useNavigate();
 
   const onSubmit = async (data: any) => {
@@ -36,6 +37,8 @@ export function LoginForm({
       toast.error(`something went wrong`);
     }
   };
+  const loadingErrorUI = handleLoadingError(isLoading, isError);
+  if (loadingErrorUI) return loadingErrorUI;
 
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
@@ -98,7 +101,7 @@ export function LoginForm({
 
               {/* Submit Button */}
               <Button type="submit" className="w-full">
-                Login
+                login
               </Button>
 
               {/* Redirect to Register */}

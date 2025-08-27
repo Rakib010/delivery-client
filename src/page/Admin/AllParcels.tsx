@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import React, { useState } from "react";
+import { useState } from "react";
 import {
   useAllParcelsQuery,
   useUpdatedParcelStatusMutation,
@@ -31,7 +31,7 @@ import { getStatusIcon, getStatusVariant } from "@/utils/status";
 
 export default function AllParcels() {
   const [currentPage, setCurrentPage] = useState(1);
-  const [limit, setlimt] = useState(5);
+  const limit = 5;
 
   const {
     data: parcelData,
