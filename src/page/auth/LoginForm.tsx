@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -16,29 +15,40 @@ import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { useLoginMutation } from "@/redux/features/auth/auth.api";
 import p1 from "../../assets/login1.avif";
-import { handleLoadingError } from "@/utils/ErrorHandle";
 
 export function LoginForm({
   className,
   ...props
 }: React.ComponentProps<"div">) {
   const form = useForm();
-  const [login, { isLoading, isError }] = useLoginMutation();
+  const [login, { isLoading: isLoginLoading }] = useLoginMutation();
   const navigate = useNavigate();
 
+  /*  const {
+    data: user,
+    isLoading: isUserLoading,
+  } = useUserInfoQuery(undefined, {
+    skip: true, 
+  });
+ */
   const onSubmit = async (data: any) => {
     try {
       const res = await login(data).unwrap();
       if (res.success) {
-        toast.success("user login successfully");
+        toast.success("User logged in successfully");
+
         navigate("/");
       }
     } catch (error) {
-      toast.error(`something went wrong`);
+      toast.error("Something went wrong");
     }
   };
-  const loadingErrorUI = handleLoadingError(isLoading, isError);
-  if (loadingErrorUI) return loadingErrorUI;
+
+  /*  const loadingErrorUI = handleLoadingError(
+    isLoginLoading || isUserLoading,
+    false
+  );
+  if (loadingErrorUI) return loadingErrorUI; */
 
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
@@ -56,7 +66,6 @@ export function LoginForm({
                 </p>
               </div>
 
-              {/* Email */}
               <FormField
                 control={form.control}
                 name="email"
@@ -76,7 +85,6 @@ export function LoginForm({
                 )}
               />
 
-              {/* Password */}
               <FormField
                 control={form.control}
                 name="password"
@@ -99,12 +107,10 @@ export function LoginForm({
                 )}
               />
 
-              {/* Submit Button */}
               <Button type="submit" className="w-full">
-                login
+                Login
               </Button>
 
-              {/* Redirect to Register */}
               <div className="text-center text-sm">
                 Don&apos;t have an account?{" "}
                 <Link to="/register" className="underline underline-offset-4">
@@ -114,7 +120,6 @@ export function LoginForm({
             </form>
           </Form>
 
-          {/* Right side image */}
           <div className="bg-muted relative hidden md:block">
             <img
               src={p1}

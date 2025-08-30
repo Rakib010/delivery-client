@@ -14,33 +14,42 @@ import {
 import { Link } from "react-router";
 import { getSidebarItems } from "@/utils/getSidebarItems";
 import { useUserInfoQuery } from "@/redux/features/auth/auth.api";
-import { handleLoadingError } from "@/utils/ErrorHandle";
+import { Button } from "./ui/button";
+import { ArrowLeft } from "lucide-react";
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
-  const { data: userData, isLoading, isError } = useUserInfoQuery(undefined);
+  const { data: userData } = useUserInfoQuery(undefined);
 
   const data = {
     navMain: getSidebarItems(userData?.data?.role),
   };
 
-  const loadingErrorUI = handleLoadingError(isLoading, isError);
-  if (loadingErrorUI) return loadingErrorUI;
-
   return (
     <Sidebar {...props}>
-      <SidebarHeader className="mb-5">
-        <Link to="/">Parcel Delivery</Link>
+      <SidebarHeader className="mb-4">
+        <Button
+          asChild
+          size="sm"
+          variant="outline"
+          className="w-full flex items-center gap-2"
+        >
+          <Link to="/">
+            <ArrowLeft className="h-4 w-4" />
+            Back to Home
+          </Link>
+        </Button>
       </SidebarHeader>
-      <SidebarContent className="font-semibold text-2xl">
+
+      <SidebarContent className="font-semibold text-lg">
         {data.navMain.map((item) => (
           <SidebarGroup key={item.title}>
             <SidebarGroupLabel>{item.title}</SidebarGroupLabel>
             <SidebarGroupContent>
               <SidebarMenu>
-                {item.items.map((item) => (
-                  <SidebarMenuItem key={item.title}>
-                    <SidebarMenuButton asChild isActive={item.isActive}>
-                      <Link to={item.url}>{item.title}</Link>
+                {item.items.map((subItem) => (
+                  <SidebarMenuItem key={subItem.title}>
+                    <SidebarMenuButton asChild isActive={subItem.isActive}>
+                      <Link to={subItem.url}>{subItem.title}</Link>
                     </SidebarMenuButton>
                   </SidebarMenuItem>
                 ))}
@@ -49,6 +58,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
           </SidebarGroup>
         ))}
       </SidebarContent>
+
       <SidebarRail />
     </Sidebar>
   );
