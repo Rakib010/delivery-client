@@ -29,5 +29,6 @@ The Parcel Delivery Frontend provides:
 - **Tailwind CSS** (Styling)
 
 
+delivery-server github -> https://github.com/Rakib010/delivery-server
 
-Live link -> 
+Live link -> https://delivery-client-tan.vercel.app
