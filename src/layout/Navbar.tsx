@@ -39,7 +39,8 @@ const navigationLinks = [
 ];
 
 export default function Navbar() {
-  const { data} = useUserInfoQuery(undefined);
+  const { data } = useUserInfoQuery(undefined);
+  console.log(data);
   const [logout] = useLogoutMutation();
   const dispatch = useAppDispatch();
 
@@ -117,8 +118,8 @@ export default function Navbar() {
                         data?.data?.role === role.admin
                           ? "/admin"
                           : data?.data?.role === role.sender
-                          ? "/sender"
-                          : "/receiver"
+                            ? "/sender"
+                            : "/receiver"
                       }
                     >
                       Dashboard

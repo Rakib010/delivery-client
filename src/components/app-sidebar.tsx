@@ -19,6 +19,7 @@ import { ArrowLeft } from "lucide-react";
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const { data: userData } = useUserInfoQuery(undefined);
+  console.log(userData);
 
   const data = {
     navMain: getSidebarItems(userData?.data?.role),

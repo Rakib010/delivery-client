@@ -52,10 +52,12 @@ axiosInstance.interceptors.response.use(
             _retry: boolean;
         };
 
+        /*   error.response.status === 500 &&
+              error.response.data.message === "jwt expired" && */
         if (
-            error.response.status === 500 &&
-            error.response.data.message === "jwt expired" &&
-            !originalRequest._retry
+            error.response.status === 401 &&
+            !originalRequest._retry &&
+            originalRequest.url !== "/auth/refresh-token"
         ) {
             console.log("Your token is expired");
 

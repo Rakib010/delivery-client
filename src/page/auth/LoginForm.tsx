@@ -39,6 +39,11 @@ export function LoginForm({
 
         navigate("/");
       }
+      /* if (res.data?.user?.role) {
+          navigate(`/${res.data.user.role.toLowerCase()}`);
+        } else {
+          navigate("/");
+        } */
     } catch (error) {
       toast.error("Something went wrong");
     }
